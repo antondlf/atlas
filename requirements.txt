@@ -1,0 +1,6 @@
+librosa
+transformers
+numpy
+torch
+pympi-ling
+pyctcdecode
