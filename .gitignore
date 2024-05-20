@@ -1,0 +1,8 @@
+demo_transcription/
+*.eaf
+*.pfsx
+text_output.txt
+.DS_Store
+.gitignore.swp
+test_speech/
+.venv

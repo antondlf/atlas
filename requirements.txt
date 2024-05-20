@@ -2,5 +2,6 @@ librosa
 transformers
 numpy
 torch
+torchaudio
 pympi-ling
 pyctcdecode
