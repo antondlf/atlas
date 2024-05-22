@@ -4,6 +4,10 @@ import torch, torchaudio
 import librosa
 from torch.nn.functional import pad
 from format_output import generate_eaf
+from utils import select_language
+import argparse
+import pathlib
+from pathlib import Path
 
 def padded_stack(
     tensors, side= "right", mode="constant", value= 0
@@ -134,14 +138,66 @@ class Wav2Vec2Transcriber(BaseModel):
 
 
 
-def main(audio_path):
+def transcribe_audio(audio_path, language, output_path, quantization):
 
-    model = WhisperTranscriber('openai/whisper-tiny.en')
+    model_name = select_language(language)
 
+    if language == 'English':
+
+        model = WhisperTranscriber(model_name)
+    else:
+        model = Wav2Vec2Transcriber(model_name)
     transcribed = model.single_speaker_transcribe(audio_path)
 
-    generate_eaf(transcribed, audio_path, 'demo_transcription/elan_output.eaf')
+    generate_eaf(transcribed, audio_path, output_path)
         
 
 if __name__ == '__main__':
-    main('/Users/anton/projects/atlas/test_speech/sw2018A.wav')
+
+    parser = argparse.ArgumentParser(
+        name='Automatic Transcription for Linguistic Annotations',
+        description="Program takes in a file or directory and transcribes"\
+        "audio to an elan format",
+    )
+    parser.add_argument(
+        'audio_path', help="path to directory or wav file",
+        type=Path
+    )
+    parser.add_argument(
+        '-l', "--language",
+          help="language to transcribe from. Current support includes English and Galician.",
+          default='English',
+          type=str
+    )
+    parser.add_argument(
+        '-o', "--output_path",
+          help="path to save output file.",
+          type=Path,
+          default=None
+    )
+    parser.add_argument(
+        '-q', '--quantization',
+          help="whether to quantize the model",
+          type=str
+    )
+
+    args = parser.parse_args()
+
+    audio_path = args.audio_path
+    language = args.language
+    output_path = args.output_path
+    quantization = args.quantization
+    if pathlib.isdir(audio_path):
+        for file in audio_path.glob('*.wav'):
+            if pathlib.isfile(output_path):
+                raise ValueError("If input path is a directory output path has to be a directory too")
+            else:
+                out_path = file.with_suffix('.eaf') if output_path is None else output_path / f'{file.stem}.wav'
+                transcribe_audio(file, language, out_path, quantization)
+
+    else:
+        if not pathlib.isfile(output_path):
+            raise ValueError("If input path is a file output path has to be a file too")
+        else:
+            out_path = audio_path.with_suffix('.eaf') if output_path is None else output_path
+            transcribe_audio(audio_path, language, output_path, quantization)
