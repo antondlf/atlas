@@ -4,98 +4,6 @@ from tkinter.filedialog import askopenfilename
 from pathlib import Path
 from asr import transcribe_audio
 
-# window = tk.Tk()
-
-# window.title("Automatic Transcription for Linguistic Annotators")
-
-# def show():
-#     filename = askopenfilename(filetypes=[("Wav files", '*.wav')])
-#     main(filename)
-#     print(filename)
-#     #main(path)
-
-# button = tk.Button(window, text='Transcribe a file', width=25, command=lambda: show())
-# button.place(x=50, y=50)
-# window.mainloop()
-# arg_dict = {
-#             'file_path': None,
-#             'n_speakers': None,
-#             'language': None,
-#             'output_path': None,
-#             'output_app': 'Elan'
-#         }
-# window = tk.Tk()
-# root = tk.Frame(window, borderwidth=5, relief="ridge", width=200, height=100)
-# label = tk.Label(root, text="Main Page")
-
-
-# # Language selection
-# language_selector_title = tk.Label(root, text='Select a Language')
-# languages_supported = ["Galician", "English"]
-# choicesvar = tk.StringVar(value=languages_supported)
-# language_selector = tk.Listbox(
-#     root,
-#     listvariable=choicesvar,
-#     height=10,
-#     width = 15,
-#     activestyle = 'dotbox', 
-#     font = "Helvetica",
-#     fg = "red"
-# )
-
-# #self.language_selector.bind('<<ListboxSelect>>', self.set_language)
-
-
-# # Speaker number selection
-# n_speaker_title = tk.Label(root, text="How many speakers do you expect in this audio.")
-
-# n_speaker_box = tk.Entry(root, width=25, bd =5)
-
-# #self.n_speaker_box.set('2')
-
-# # Output File path
-# output_path_title = tk.Label(root, text="Output filepath for transcription. Must end in .eaf or .TextGrid (unsupported in beta)")
-
-# output_path = tk.Entry(root, width=25, bd =5, bg="white")
-
-# button = tk.Button(root, text='Select file for transcription', width=25, command=lambda: self.get_file())
-
-# # We use the switch_window_button in order to call the show_frame() method as a lambda function
-# switch_window_button = tk.Button(
-#     root,
-#     text="Transcribe",
-#     command=lambda: fill_args(arg_dict, n_speaker_box, language_selector, output_path),
-# )
-# label.grid(row=0, column=0,  sticky='nsew')
-# language_selector_title.pack()#.grid(row=1, column=0,  sticky='nsew')
-# language_selector.grid(row=2,column=0, rowspan=2, sticky='nsew')
-
-# n_speaker_title.grid(row=4, column=0, sticky='nsew')
-# n_speaker_box.grid(row=5, column=0, sticky='nsew')
-
-# output_path_title.grid(row=6, column=0, sticky='nsew')
-# output_path.grid(row=7, column=0, sticky='nsew')
-
-# button.grid(row=8, column=0)
-# switch_window_button.grid(row=9, column=0,  sticky='s')
-
-
-# def fill_args(arg_dict, n_speaker_box, language_selector, output_path):
-#     arg_dict['n_speakers']  = int(n_speaker_box.get())
-#     arg_dict['language']    = language_selector.get()
-#     arg_dict['output_path'] = output_path.get()
-#     arg_dict['output_app']  = 'Elan' # To add option when supported.
-#     arg_dict['quantization']= 'float32' # to add option when supported.
-
-
-#     transcribe_audio(
-#         arg_dict['file_path'],
-#         arg_dict['language'],
-#         arg_dict['output_path'],
-#         arg_dict['quantization'],
-#         arg_dict['n_speakers']
-#         )
-# root.mainloop()
 
 class windows(tk.Tk):
     def __init__(self, *args, **kwargs):
@@ -176,14 +84,14 @@ class MainPage(tk.Frame):
 
 
         # Speaker number selection
-        n_speaker_title = tk.Label(main_frame, bg='black', text="How many speakers do you expect in this audio.")
+        n_speaker_title = tk.Label(main_frame, text="How many speakers do you expect in this audio.")
 
         self.n_speaker_box = tk.Entry(main_frame, width=25, bd =5, bg='white')
         
         #self.n_speaker_box.set('2')
 
         # Output File path
-        output_path_title = tk.Label(main_frame, text="Output filepath for transcription. Must end in .eaf or .TextGrid (unsupported in beta)")
+        output_path_title = tk.Label(main_frame, text="Output filepath for transcription.")
         
         self.output_path = tk.Entry(main_frame, width=25, bd =5, bg="white")
         
@@ -221,7 +129,7 @@ class MainPage(tk.Frame):
 
     def fill_args(self, controller):
         self.arg_dict['n_speakers']  = int(self.n_speaker_box.get())
-        self.arg_dict['language']    = self.language_selector.get()
+        self.arg_dict['language']    = self.language_selector.get(self.language_selector.curselection()[0])
         self.arg_dict['output_path'] = self.output_path.get()
         self.arg_dict['output_app']  = 'Elan' # To add option when supported.
         self.arg_dict['quantization']= 'float32' # to add option when supported.

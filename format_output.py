@@ -19,4 +19,4 @@ def generate_eaf(transcriptions, input_file, output_file, n_speakers=1, tiername
             elan_file.add_annotation(tier, int(start_s*1000), int(end_s*1000), text)
 
     
-    elan_file.to_file(output_file)
+    elan_file.to_file(str(output_file))
