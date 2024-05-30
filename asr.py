@@ -66,8 +66,8 @@ class BaseModel():
         with torch.no_grad():
             if self.model_type == 'whisper':
                 input_values = self.tokenizer(batch, sampling_rate=sr, return_tensors="pt").input_features
-                raw_preds = self.model.generate(input_values)
-                transcription = self.tokenizer.batch_decode(raw_preds, skip_special_tokens=True)
+                raw_preds = self.model.generate(input_values).squeeze()
+                transcription = self.tokenizer.decode(raw_preds, skip_special_tokens=True)
             elif self.model_type == 'wav2vec2':
                 input_values = self.tokenizer(batch, sampling_rate=sr, return_tensors="pt").input_values
                 raw_preds = self.model(input_values).logits.squeeze().cpu().numpy()
@@ -254,4 +254,4 @@ if __name__ == '__main__':
     else:
 
         out_path = audio_path.with_suffix('.eaf') if output_path is None else output_path
-        transcribe_audio(audio_path, language, output_path, quantization, n_speakers)
+        transcribe_audio(audio_path, language, out_path, quantization, n_speakers)
